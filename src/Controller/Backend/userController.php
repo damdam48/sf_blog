@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 #[Route('/admin/users', name: 'admin.users')]
-class userController extends AbstractController
+class UserController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
@@ -28,7 +28,7 @@ class userController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: '.update', methods: ['GET', 'POST'])]
+    #[Route('/{id}/update', name: '.update', methods: ['GET', 'POST'])]
     public function update(?User $user, Request $request): Response|RedirectResponse
     {
         // on vérifie que l'utilisateur existe
@@ -52,5 +52,25 @@ class userController extends AbstractController
         return $this->render('Backend/Users/update.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/delete', name: '.delete', methods: ['POST'])]
+    public function delete(?User $user, Request $request): RedirectResponse
+    {
+        if (!$user) {
+            $this->addFlash('error', 'user non trouvé');
+
+            return $this->redirectToRoute('admin.users.index');
+        }
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('token'))) {
+            $this->em->remove($user);
+            $this->em->flush();
+
+            $this->addFlash('success', 'L\'utilisateur a bien été supprimé');
+        } else {
+            $this->addFlash('error', 'Token CSRF invalide');
+        }
+
+        return $this->redirectToRoute('admin.users.index');
     }
 }
