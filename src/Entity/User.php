@@ -55,6 +55,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $lastName = null;
 
+    public function fullName(): string
+    {
+        return $this->firstName.' '. $this->lastName;
+    }
+
 
 
     public function getId(): ?int
