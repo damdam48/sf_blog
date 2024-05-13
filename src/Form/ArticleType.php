@@ -4,6 +4,10 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Entity\Article;
+use App\Entity\Categorie;
+use App\Repository\CategorieRepository;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -22,6 +26,21 @@ class ArticleType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Titre de l\'article',
                 ],
+            ])
+
+            ->add('categories', EntityType::class,[
+                'class' => Categorie::class,
+                'choice_label' => 'name',
+                'expanded' => false,
+                'multiple' => true,
+                'by_reference' => false,
+                'autocomplete' => true,
+                'query_builder' => function (CategorieRepository $repo): QueryBuilder{
+                    return $repo->createQueryBuilder('c')
+                        ->andWhere('c.enable = :enable')
+                        ->setParameter('enable', true)
+                        ->orderBy('c.name', 'ASC');
+                },
             ]);
 
         if ($options['isEdit']) {
