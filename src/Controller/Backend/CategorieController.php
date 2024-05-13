@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -21,10 +22,10 @@ class CategorieController extends AbstractController
     ) {
     }
     #[Route(' ', name: '.index', methods: ['GET'])]
-    public function index(CategorieRepository $articleRepo): Response
+    public function index(CategorieRepository $categorieRepo): Response
     {
         return $this->render('backend/Categories/index.html.twig', [
-            'categories' => $articleRepo->findAll(),
+            'categories' => $categorieRepo->finAllOrderByName(),
         ]);
     }
 
@@ -76,4 +77,50 @@ class CategorieController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    //delete
+    #[Route('/{id}/delete', name: '.delete', methods: ['POST'])]
+    public function delete(?Categorie $categorie, Request $request): RedirectResponse
+    {
+        if (!$categorie) {
+            $this->addFlash('error', 'categorie non trouvé');
+
+            return $this->redirectToRoute('admin.categories.index');
+        }
+        if ($this->isCsrfTokenValid('delete' . $categorie->getId(), $request->request->get('token'))) {
+            $this->em->remove($categorie);
+            $this->em->flush();
+
+            $this->addFlash('success', 'categorie supprimé');
+            return $this->redirectToRoute('admin.categories.index');
+
+        }else {
+            $this->addFlash('error', 'Token CSRF invalide');
+        }
+        return $this->redirectToRoute('admin.categories.index');
+
+    }
+
+        //switch
+        #[Route('/{id}/switch', name: '.switch', methods: ['GET'])]
+        public function switch(?Categorie $categorie): JsonResponse
+        {
+            if (!$categorie) {
+                return new JsonResponse([
+                    'status' => 'error',
+                    'message' => 'Categorie introuvable',
+                ], 404 );
+            }
+    
+            $categorie->setEnable(!$categorie->isEnable());
+    
+            $this->em->persist($categorie);
+            $this->em->flush();
+    
+            return new JsonResponse([
+                'status' => 'ok',
+                'message' => 'Article mis à jour',
+                'enable' => $categorie->isEnable(),
+            ]);
+        }
 }

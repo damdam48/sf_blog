@@ -7,5 +7,6 @@
  */
 import "./styles/app.scss";
 import "./js/switchArticle.js";
+import "./js/switchCategorie.js";
 
 require('bootstrap');

@@ -32,6 +32,7 @@ class CategorieType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Categorie::class,
+            'sanitizer_html' => true,
         ]);
     }
 }

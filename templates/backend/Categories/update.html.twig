@@ -9,7 +9,7 @@
     <section class="container mt-4">
         <h1 class="text-center">Mise a jour d'une categorie</h1>
         {% include 'Backend/Categories/_form.html.twig' with { buttonLabel: 'update' } %}
-        <a href="{{ path('admin.Categories.index') }}" class="btn btn-secondary mt-4">Retour à la liste de categories</a>
+        <a href="{{ path('admin.categories.index') }}" class="btn btn-secondary mt-4">Retour à la liste des categories</a>
     </section>
 
 {% endblock %}
