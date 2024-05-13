@@ -21,9 +21,6 @@ class ArticleController extends AbstractController
     ) {
     }
 
-
-
-
     // index
     #[Route(' ', name: '.index', methods: ['GET'])]
     public function index(ArticleRepository $articleRepo): Response

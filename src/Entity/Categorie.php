@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint('UNIQUE_CATEGORIE_NAME', fields: ['name'])]
-#[UniqueEntity(fields: ['name'], messages: 'Le nol de la categorie est déja utilisé')]
+#[UniqueEntity(fields: ['name'], message: 'Le nol de la categorie est déja utilisé')]
 class Categorie
 {
     use EnableTrait,
