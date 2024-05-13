@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 #[Route('/admin/articles', name: 'admin.articles')]
@@ -109,5 +110,28 @@ class ArticleController extends AbstractController
             $this->addFlash('error', 'Token CSRF invalide');
         }
         return $this->redirectToRoute('admin.articles.index');
+    }
+
+    //switch
+    #[Route('/{id}/switch', name: '.switch', methods: ['GET'])]
+    public function switch(?Article $article): JsonResponse
+    {
+        if (!$article) {
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Article introuvable',
+            ], 404 );
+        }
+
+        $article->setEnable(!$article->isEnable());
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        return new JsonResponse([
+            'status' => 'ok',
+            'message' => 'Article mis à jour',
+            'enable' => $article->isEnable(),
+        ]);
     }
 }
