@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Update d'un article
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <section class="container mt-4">
+        <h1 class="text-center">Mise a jour d'un article</h1>
+        {% include 'Backend/Articles/_form.html.twig' with { buttonLabel: 'update' } %}
+        <a href="{{ path('admin.articles.index') }}" class="btn btn-secondary mt-4">Retour à la liste</a>
+    </section>
+
+{% endblock %}
