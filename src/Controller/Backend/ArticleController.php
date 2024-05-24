@@ -6,12 +6,13 @@ use App\Entity\Article;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/articles', name: 'admin.articles')]
 class ArticleController extends AbstractController
@@ -21,11 +22,7 @@ class ArticleController extends AbstractController
     ) {
     }
 
-
-
-
-    // index
-    #[Route(' ', name: '.index', methods: ['GET'])]
+    #[Route('', name: '.index', methods: ['GET'])]
     public function index(ArticleRepository $articleRepo): Response
     {
         return $this->render('Backend/Articles/index.html.twig', [
@@ -33,17 +30,40 @@ class ArticleController extends AbstractController
         ]);
     }
 
-
-
-
-    // update
-    #[Route('/{id}/update', name: '.update', methods: ['GET', 'POST'])]
-    public function update(?article $article, Request $request): Response|RedirectResponse
+    #[Route('/create', name: '.create', methods: ['GET', 'POST'])]
+    public function create(Request $request): Response|RedirectResponse
     {
-        if (!$article) {
-            $this->addFlash('error', 'L\'article n\'existe pas');
+        $article = new Article;
+
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            $article->setUser($user);
+
+            $this->em->persist($article);
+            $this->em->flush();
+
+            $this->addFlash('success', 'Article créé avec succès');
+
             return $this->redirectToRoute('admin.articles.index');
         }
+
+        return $this->render('Backend/Articles/create.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{slug}/update', name: '.update', methods: ['GET', 'POST'])]
+    public function update(?Article $article, Request $request): Response|RedirectResponse
+    {
+        if (!$article) {
+            $this->addFlash('error', 'Article non trouvé');
+
+            return $this->redirectToRoute('admin.articles.index');
+        }
+
         $form = $this->createForm(ArticleType::class, $article, ['isEdit' => true]);
         $form->handleRequest($request);
 
@@ -51,87 +71,55 @@ class ArticleController extends AbstractController
             $this->em->persist($article);
             $this->em->flush();
 
-            $this->addFlash('success', 'L\'article a bien été mise a jour');
+            $this->addFlash('success', 'Article mis à jour avec succès');
+
             return $this->redirectToRoute('admin.articles.index');
         }
+
         return $this->render('Backend/Articles/update.html.twig', [
             'form' => $form,
         ]);
     }
 
-
-
-
-    // create
-    #[Route('/create', name: '.create', methods: ['GET', 'POST'])]
-    public function create(Request $request): Response|RedirectResponse
-    {
-
-
-        $article = new Article();
-        $form = $this->createForm(ArticleType::class, $article);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $user = $this->getUser();
-            $article->setUser($user);
-
-            $this->em->persist($article);
-            $this->em->flush();
-
-            $this->addFlash('success', 'L\'article a bien été créé');
-
-            return $this->redirectToRoute('admin.articles.index');
-        }
-
-
-        return $this->render('Backend/Articles/create.html.twig', [
-            'form' => $form,
-        ]);
-    }
-
-    //delete
-    #[Route('/{id}/delete', name: '.delete', methods: ['GET', 'POST'])]
-
+    #[Route('/{id}/delete', name: '.delete', methods: ['POST'])]
     public function delete(?Article $article, Request $request): RedirectResponse
     {
         if (!$article) {
-            $this->addFlash('error', 'L\'article n\'existe pas');
+            $this->addFlash('error', 'Article non trouvé');
+
             return $this->redirectToRoute('admin.articles.index');
         }
+
         if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('token'))) {
             $this->em->remove($article);
             $this->em->flush();
 
-            $this->addFlash('success', 'L\'article a bien été supprimé');
-            return $this->redirectToRoute('admin.articles.index');
+            $this->addFlash('success', 'Article supprimé avec succès');
         } else {
-            $this->addFlash('error', 'Token CSRF invalide');
+            $this->addFlash('error', 'Token invalide');
         }
+
         return $this->redirectToRoute('admin.articles.index');
     }
 
-    //switch
     #[Route('/{id}/switch', name: '.switch', methods: ['GET'])]
     public function switch(?Article $article): JsonResponse
     {
         if (!$article) {
-            return new JsonResponse([
+            return $this->json([
                 'status' => 'error',
-                'message' => 'Article introuvable',
-            ], 404 );
+                'message' => 'Article non trouvé'
+            ], 404);
         }
 
         $article->setEnable(!$article->isEnable());
-
         $this->em->persist($article);
         $this->em->flush();
 
-        return new JsonResponse([
-            'status' => 'ok',
-            'message' => 'Article mis à jour',
-            'enable' => $article->isEnable(),
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Article mis à jour avec succès',
+            'enable' => $article->isEnable()
         ]);
     }
 }

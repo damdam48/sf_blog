@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Articles
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <section class="container mt-2">
+		<h1 class="text-center">Liste des articles</h1>
+		<div class="blog-list mt-2">
+			{% for article in articles %}
+				{% include 'Components/_articleCard.html.twig' %}
+			{% endfor %}
+		</div>
+	</section>
+{% endblock %}

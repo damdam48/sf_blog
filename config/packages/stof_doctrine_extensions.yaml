@@ -5,5 +5,3 @@ stof_doctrine_extensions:
     orm:
         default:
             sluggable: true
-
-    

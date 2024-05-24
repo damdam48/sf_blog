@@ -21,6 +21,35 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
+    public function findLatest(int $limit, bool $includeDisallow = false): array
+    {
+        $query = $this->createQueryBuilder('a')
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit);
+
+        if (!$includeDisallow) {
+            $query->andWhere('a.enable = :enable')
+                ->setParameter('enable', true);
+        }
+
+        return $query
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findEnable(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a', 'u', 'c')
+            ->andWhere('a.enable = :enable')
+            ->setParameter('enable', true)
+            ->orderBy('a.createdAt', 'DESC')
+            ->join('a.user', 'u')
+            ->leftjoin('a.categories', 'c')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Article[] Returns an array of Article objects
     //     */

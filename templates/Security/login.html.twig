@@ -8,32 +8,26 @@
 {% block body %}
 	<section class="container mt-2">
 		<h1 class="text-center">Se connecter</h1>
-
-
-		<form class="card p-3 w-50 mx-auto" action="{{ path('app.login') }}" method="post">
-
+		<form action="{{ path('app.login') }}" method="post" class="card p-3 w-50 mx-auto">
 			{% if error %}
-				<div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				<div class="alert alert-danger" role="alert">
+					{{ error.messageKey|trans(error.messageData, 'security') }}
+				</div>
 			{% endif %}
-
 			<div class="mb-3">
 				<label for="email" class="form-label">Email:</label>
-				<input type="email" id="email" name="_username" class="form-control" value="{{ lastUsername }}">
+				<input type="email" class="form-control" id="email" name="_username" value="{{ lastUsername }}">
 			</div>
 
 			<div class="mb-3">
-				<label class="form-label" for="password">Password:</label>
-				<input class="form-control" type="password" id="password" name="_password">
+				<label for="password" class="form-label">Password:</label>
+				<input type="password" class="form-control" id="password" name="_password">
 			</div>
 
-
 			{# If you want to control the URL the user is redirected to on success
-																		<input type="hidden" name="_target_path" value="/account"> #}
-
+												<input type="hidden" name="_target_path" value="/account"> #}
 			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-			<button class="btn btn-primary" type="submit">Se connecter</button>
+			<button type="submit" class="btn btn-primary">Se connecter</button>
 		</form>
-
 	</section>
 {% endblock %}
