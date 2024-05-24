@@ -2,19 +2,19 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\EnableTrait;
 use App\Entity\Traits\DateTimeTrait;
+use App\Entity\Traits\EnableTrait;
 use App\Repository\CategorieRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint('UNIQUE_CATEGORIE_NAME', fields: ['name'])]
-#[UniqueEntity(fields: ['name'], message: 'Le nol de la categorie est déja utilisé')]
+#[UniqueEntity(fields: ['name'], message: 'Le nom de la catégorie est déjà utilisé')]
+#[ORM\HasLifecycleCallbacks]
 class Categorie
 {
     use EnableTrait,
@@ -29,8 +29,8 @@ class Categorie
     #[Assert\Length(
         min: 3,
         max: 255,
-        minMessage: 'Le nom doit faire plus de {{ limit }} caractères',
-        maxMessage: 'Le nom doit faire moin de {{ limit }} caractères',
+        minMessage: 'Le name doit faire plus de {{ limit }} caractères',
+        maxMessage: 'Le nom doit faire moins de {{ limit }} caractères',
     )]
     #[Assert\NotBlank]
     private ?string $name = null;

@@ -16,13 +16,6 @@ trait DateTimeTrait
     {
         return $this->createdAt;
     }
-    #[ORM\PrePersist]
-    public function autoSetCreatedAt(): static
-    {
-        $this->createdAt = new \DateTimeImmutable();
-
-        return $this;
-    }
 
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
@@ -31,11 +24,10 @@ trait DateTimeTrait
         return $this;
     }
 
-    
-    #[ORM\PreUpdate]
-    public function autoSetUpdatedAt(): static
+    #[ORM\PrePersist]
+    public function autoSetCreatedAt(): static
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -52,5 +44,11 @@ trait DateTimeTrait
         return $this;
     }
 
+    #[ORM\PreUpdate]
+    public function autoSetUpdatedAt(): static
+    {
+        $this->updatedAt = new \DateTimeImmutable();
 
+        return $this;
+    }
 }

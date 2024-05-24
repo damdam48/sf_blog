@@ -10,7 +10,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -24,7 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
     #[Assert\Length(
         max: 180,
-        maxMessage: 'L\'email ne peut pas fait plus de de {{ limit }} caractères.'
+        maxMessage: 'L\'email ne peut pas faire plus de {{ limit }} caractères'
     )]
     #[Assert\Email]
     private ?string $email = null;
@@ -41,19 +40,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(
-        max: 255,
+        max: 255
     )]
     private ?string $firstName = null;
 
-
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(
-        max: 255,
+        max: 255
     )]
     private ?string $lastName = null;
 
@@ -68,12 +65,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->articles = new ArrayCollection();
     }
 
-    public function fullName(): string
+    public function __toString(): string
     {
-        return $this->firstName.' '. $this->lastName;
+        return "$this->firstName $this->lastName";
     }
 
-
+    public function getFullName(): string
+    {
+        return "$this->firstName $this->lastName";
+    }
 
     public function getId(): ?int
     {

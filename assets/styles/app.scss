@@ -1,1 +1,15 @@
-@import "~bootstrap/scss/bootstrap";
+// Import abstracts
+@import "abstracts/variables";
+@import "abstracts/mixins";
+@import "abstracts/functions";
+
+// Import Vendors
+@import "vendors/bootstrap";
+
+// Import base
+@import "base/base";
+@import "base/typography";
+
+// Import components
+@import "components/banner";
+@import "components/blogCard";

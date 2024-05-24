@@ -1,15 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Update d'une categorie
-    {{ parent() }}
+	Modification d'une catégorie
+	{{ parent() }}
 {% endblock %}
 
 {% block body %}
-    <section class="container mt-4">
-        <h1 class="text-center">Mise a jour d'une categorie</h1>
-        {% include 'Backend/Categories/_form.html.twig' with { buttonLabel: 'update' } %}
-        <a href="{{ path('admin.categories.index') }}" class="btn btn-secondary mt-4">Retour à la liste des categories</a>
-    </section>
-
+	<section class="container mt-2">
+		<h1 class="text-center">Modification d'une catégorie</h1>
+		{% include 'Backend/Categories/_form.html.twig' with { buttonLabel: 'Modifier' } %}
+		<a href="{{ path('admin.categories.index') }}" class="btn btn-secondary mt-4">Retour à la liste</a>
+	</section>
 {% endblock %}

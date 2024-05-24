@@ -3,8 +3,8 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
@@ -13,18 +13,18 @@ class AppFixtures extends Fixture
         private UserPasswordHasherInterface $hasher
     ) {
     }
+
     public function load(ObjectManager $manager): void
     {
-
         // $product = new Product();
         // $manager->persist($product);
 
         $user = (new User)
-            ->setFirstName('admin')
-            ->setLastName('admin')
-            ->setEmail("admin@mail.fr")
+            ->setFirstName('Pierre')
+            ->setLastName('Bertrand')
+            ->setEmail('admin@test.com')
             ->setPassword(
-                $this->hasher->hashPassword(new User, '123')
+                $this->hasher->hashPassword(new User, 'Test1234!')
             )
             ->setRoles(['ROLE_ADMIN']);
 
@@ -33,11 +33,12 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 10; $i++) {
             $user = (new User)
                 ->setFirstName("User $i")
-                ->setLastName('test')
-                ->setEmail("user-$i@mail.fr")
+                ->setLastName('Test')
+                ->setEmail("user-$i@test.com")
                 ->setPassword(
-                    $this->hasher->hashPassword(new User, '123')
+                    $this->hasher->hashPassword(new User, 'Test1234!')
                 );
+
             $manager->persist($user);
         }
 

@@ -1,30 +1,27 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Administration des categories
+	Administration des catégories
 	{{ parent() }}
 {% endblock %}
 
 {% block body %}
 	<section class="container mt-2">
-		<h1 class="text-center">Administration des categories</h1>
-		<a href="{{ path('admin.categories.create') }}" class="mt-2 btn btn-primary">Créer un categorie</a>
-		<div class="row mt-2 gy-4">
+		<h1 class="text-center">Administration des catégories</h1>
+		<a href="{{ path('admin.categories.create') }}" class="btn btn-primary my-2">Créer une catégorie</a>
+		<div class="row gy-4">
 			{% for categorie in categories %}
-				<div class="col-md-4">
-					<div class="card border-{{ categorie.enable ? 'success' : 'danger' }}">
-						<h2 class="card-header fs-4">{{ categorie.name }}</h2>
-						<div class="card-body">
-
-
+				<div class="col-md-3">
+					<div class="blog-card border-{{ categorie.enable ? 'success' : 'danger' }}">
+						<div class="blog-card-content">
+							<h2 class="card-title">{{ categorie.name }}</h2>
 							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" id="categorie-switch-{{ categorie.id }}" {{ categorie.enable ? 'checked' }} data-switch-categorie-id="{{ categorie.id }}" />
-								<label class="form-check-label fw-bold text-{{ categorie.enable ? 'success' : 'danger'}}" for="categorie-switch-{{ categorie.id }}">{{ categorie.enable ? 'Actif' : 'Inactif' }}</label>
+								<input class="form-check-input" type="checkbox" id="switch-categorie-{{ categorie.id }}" data-switch-categorie-id="{{ categorie.id }}" {{ categorie.enable ? 'checked' }}/>
+								<label class="form-check-label text-{{ categorie.enable ? 'success' : 'danger' }}" for="switch-categorie-{{ categorie.id }}">{{ categorie.enable ? 'Actif' : 'Inactif' }}</label>
 							</div>
-
-							<div class="d-flex flex-wrap justify-content-between mt-2">
+							<div class="mt-2 d-flex justify-content-between flex-wrap">
 								<a href="{{ path('admin.categories.update', {id: categorie.id}) }}" class="btn btn-warning">Modifier</a>
-								{% include 'Backend/categories/_deleteForm.html.twig' %}
+								{% include 'Backend/Categories/_deleteForm.html.twig' %}
 							</div>
 						</div>
 					</div>

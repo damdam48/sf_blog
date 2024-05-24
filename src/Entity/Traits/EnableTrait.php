@@ -20,6 +20,4 @@ trait EnableTrait
 
         return $this;
     }
-
-
 }
